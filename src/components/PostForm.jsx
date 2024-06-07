@@ -16,6 +16,7 @@ const PostForm = () => {
       id: Math.floor(Math.random() * 1000),
       title,
       body,
+      creatorId: currentUser.uid,
       timestamp: Date.now(),
     };
     addPost(newPost);

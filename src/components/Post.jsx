@@ -1,10 +1,12 @@
 import React, { useState, useContext } from "react";
 import { BlogContext } from "../context/BlogContext";
+import { useAuth } from "../context/authContext";
 
 const Post = ({ post }) => {
   const [editMode, setEditMode] = useState(false);
   const [editedPost, setEditedPost] = useState(post);
   const { updatePost, deletePost } = useContext(BlogContext);
+  const { currentUser } = useAuth();
 
   const handleEdit = () => {
     setEditMode(true);
@@ -55,18 +57,22 @@ const Post = ({ post }) => {
         <>
           <h2 className="text-2xl font-bold mb-2">{post.title}</h2>
           <p className="text-gray-800 mb-4">{post.body}</p>
-          <button
-            onClick={handleEdit}
-            className="mr-2 px-4 py-2 rounded border border-gray-300 text-gray-700 transition duration-300 ease-in-out hover:bg-gray-800 hover:text-white"
-          >
-            Edit
-          </button>
-          <button
-            onClick={handleDelete}
-            className="px-4 py-2 rounded border border-gray-300 text-gray-700 transition duration-300 ease-in-out hover:bg-red-500 hover:text-white"
-          >
-            Delete
-          </button>
+          {currentUser && currentUser.uid === post.creatorId && (
+            <>
+              <button
+                onClick={handleEdit}
+                className="mr-2 px-4 py-2 rounded border border-gray-300 text-gray-700 transition duration-300 ease-in-out hover:bg-gray-800 hover:text-white"
+              >
+                Edit
+              </button>
+              <button
+                onClick={handleDelete}
+                className="px-4 py-2 rounded border border-gray-300 text-gray-700 transition duration-300 ease-in-out hover:bg-red-500 hover:text-white"
+              >
+                Delete
+              </button>
+            </>
+          )}
         </>
       )}
     </div>
