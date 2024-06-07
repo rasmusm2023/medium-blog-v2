@@ -7,6 +7,7 @@ import PostForm from "./components/PostForm";
 import Login from "./components/Login";
 import { AuthProvider } from "./context/authContext";
 import { BlogProvider } from "./context/BlogContext";
+import Register from "./components/Register";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
             <Route path="/feed" element={<Feed />} />
             <Route path="/create-post" element={<PostForm />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
           </Routes>
         </Router>
       </BlogProvider>
