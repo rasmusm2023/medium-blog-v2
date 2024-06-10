@@ -1,4 +1,6 @@
 import React, { useState, useContext } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { BlogContext } from "../context/BlogContext";
 import { useAuth } from "../context/authContext";
 
@@ -7,6 +9,7 @@ const Post = ({ post }) => {
   const [editedPost, setEditedPost] = useState(post);
   const { updatePost, deletePost } = useContext(BlogContext);
   const { currentUser } = useAuth();
+  const [newComment, setNewComment] = useState("");
 
   const handleEdit = () => {
     setEditMode(true);
@@ -24,6 +27,29 @@ const Post = ({ post }) => {
     e.preventDefault();
     updatePost(editedPost);
     setEditMode(false);
+  };
+
+  const handleAddComment = () => {
+    const updatedPost = {
+      ...post,
+      comments: [
+        ...post.comments,
+        { username: currentUser.email, text: newComment },
+      ],
+    };
+    updatePost(updatedPost);
+    setNewComment("");
+  };
+
+  const handleDeleteComment = (commentIndex) => {
+    const updatedComments = post.comments.filter(
+      (_, index) => index !== commentIndex
+    );
+    const updatedPost = {
+      ...post,
+      comments: updatedComments,
+    };
+    updatePost(updatedPost);
   };
 
   return (
@@ -75,6 +101,40 @@ const Post = ({ post }) => {
           )}
         </>
       )}
+      <div className="mt-4">
+        <h3 className="text-xl text-gray-600 font-bold mb-2">Comments</h3>
+        {post.comments.map((comment, index) => (
+          <div key={index} className="mb-2 flex items-center">
+            {currentUser && currentUser.email === comment.username && (
+              <FontAwesomeIcon
+                icon={faTimes}
+                className="text-red-500 cursor-pointer mr-2"
+                onClick={() => handleDeleteComment(index)}
+              />
+            )}
+            <p className="text-gray-800">
+              <strong>{comment.username}: </strong>
+              {comment.text}
+            </p>
+          </div>
+        ))}
+        {currentUser && (
+          <div className="mt-4">
+            <textarea
+              value={newComment}
+              onChange={(e) => setNewComment(e.target.value)}
+              className="w-full px-4 py-2 mb-2 border rounded"
+              placeholder="Add a comment..."
+            />
+            <button
+              onClick={handleAddComment}
+              className="px-4 py-2 rounded border border-gray-300 text-gray-700 transition duration-300 ease-in-out hover:bg-blue-500 hover:text-white"
+            >
+              Add Comment
+            </button>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
